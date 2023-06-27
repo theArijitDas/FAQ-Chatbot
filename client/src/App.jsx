@@ -1,6 +1,6 @@
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "./styles/app.css";
 import logo from "./assets/chatbox-icon.svg";
 
@@ -10,6 +10,8 @@ const App = () => {
   const [textInput, setTextInput] = useState("");
   const [minimize, setMinimize] = useState(false);
   const [loading, setLoading] = useState(false);
+  const botGreetingMessage = "Hey! I am an assistant bot. How may I help you?";
+  const chatboxRef = useRef(null);
 
   const toggleState = () => {
     setState((prev) => !prev);
@@ -46,7 +48,7 @@ const App = () => {
           console.error("Error:", error);
           const errorMessage = {
             name: "Nina",
-            message: "Sorry, I cannot process your query at the moment.",
+            message: "I cannot process your query right now.",
           };
           setMessages((prevMessages) => [...prevMessages, errorMessage]);
           setLoading(false);
@@ -65,7 +67,7 @@ const App = () => {
   };
 
   const showSupportToast = () => {
-    if (!toast.isActive("supportToast") && !state) {
+    if (!toast.isActive("supportToast") && !state && !minimize) {
       toast.info("Need any help? Chat Support Available", {
         toastId: "supportToast",
       });
@@ -82,6 +84,19 @@ const App = () => {
     setMinimize(true);
     setState(false);
   };
+
+  useEffect(() => {
+    if (state && !minimize && messages.length === 0) {
+      setTimeout(() => {
+        const botMessage = { name: "Nina", message: botGreetingMessage };
+        setMessages((prevMessages) => [...prevMessages, botMessage]);
+
+        setTimeout(() => {
+          chatboxRef.current.scrollTop = chatboxRef.current.scrollHeight;
+        }, 100);
+      }, 1000);
+    }
+  }, [state, minimize, messages]);
 
   return (
     <div className="container">
@@ -142,7 +157,19 @@ const App = () => {
                       : "messages__item--operator"
                   }`}
                 >
-                  {message.message}
+                  {message.name === "Nina" ? (
+                    <div className="chatbox__message-container">
+                      <div className="chatbox__avatar">
+                        <img
+                          src={`https://img.icons8.com/color/48/000000/circled-user-female-skin-type-5--v1.png`}
+                          alt="Chatbot Avatar"
+                        />
+                      </div>
+                      <div className="chatbox__message">{message.message}</div>
+                    </div>
+                  ) : (
+                    message.message
+                  )}
                 </div>
               ))}
           </div>
