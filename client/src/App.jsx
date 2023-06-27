@@ -19,7 +19,7 @@ const App = () => {
   };
 
   const onSendButton = () => {
-    if (textInput === "") {
+    if (textInput === "" || loading) {
       return;
     }
 
