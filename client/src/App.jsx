@@ -10,7 +10,7 @@ const App = () => {
   const [textInput, setTextInput] = useState("");
   const [minimize, setMinimize] = useState(false);
   const [loading, setLoading] = useState(false);
-  const botGreetingMessage = "Hey! I am Pearl. How may I help you?";
+  const botGreetingMessage = "Hey, I am Pearl, How can I help you?";
   const chatboxRef = useRef(null);
 
   const toggleState = () => {
