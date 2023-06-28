@@ -29,7 +29,7 @@ class FaqEngine:
         return ' '.join(stemmed_words)
 
 
-    def query(self, user_ques):
+    def query(self, user_ques, threshold = 0.6):
 
         try:
             # Cleanup questions and them vectorize them
@@ -40,8 +40,11 @@ class FaqEngine:
             cos_sims = cosine_similarity(self.question_embeddings, user_array)
             idx = cos_sims.argmax()
 
-            # Get the answer to the most similar question
-            ans = self.data.iloc[idx]['Answers']
+            # Get the answer to the most similar question, above threshold
+            if cos_sims[idx] > threshold:
+                ans = self.data.iloc[idx]['Answers']
+            else:
+                ans = "Could not follow your question [" + user_ques + "], Try again"
 
             return ans
         
