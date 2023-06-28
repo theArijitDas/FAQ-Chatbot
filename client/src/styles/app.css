@@ -168,11 +168,28 @@ html {
 
 .chatbox__image--header {
   margin-right: 10px;
+  position: relative;
+  display: inline-block;
 }
+.chatbox__content--header{
+  color: white;
+  font-size: 0.9rem;
+  
 
+}
 .chatbox__heading--header {
   font-size: 1.2rem;
-  color: white;
+  margin-bottom: 2px;
+  
+}
+.online-symbol {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  background-color: #25D366; /* Change the color to your preference */
+  border-radius: 50%;
+  bottom: 6px;
+  right: 3px;
 }
 
 .chatbox__description--header {

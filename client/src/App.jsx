@@ -4,6 +4,8 @@ import React, { useEffect, useRef, useState } from "react";
 import "./styles/app.css";
 import logo from "./assets/chatbox-icon.svg";
 
+
+
 const App = () => {
   const [state, setState] = useState(false);
   const [messages, setMessages] = useState([]);
@@ -113,9 +115,11 @@ const App = () => {
                   src="https://img.icons8.com/color/48/000000/circled-user-female-skin-type-5--v1.png"
                   alt="image"
                 />
+                <div class="online-symbol"></div>
               </div>
               <div className="chatbox__content--header">
                 <h4 className="chatbox__heading--header">Chat support</h4>
+                <p>online</p>
               </div>
             </div>
             <div className="chatbox__header--icons">
