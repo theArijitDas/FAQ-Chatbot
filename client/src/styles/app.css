@@ -279,6 +279,7 @@ html {
   fill: #128c7e !important; /* Change the toast icon color */
 }
 
+
 @keyframes wave {
   0% {
     transform: translateY(0);

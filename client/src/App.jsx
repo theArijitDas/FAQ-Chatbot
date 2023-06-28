@@ -4,15 +4,13 @@ import React, { useEffect, useRef, useState } from "react";
 import "./styles/app.css";
 import logo from "./assets/chatbox-icon.svg";
 
-
-
 const App = () => {
   const [state, setState] = useState(false);
   const [messages, setMessages] = useState([]);
   const [textInput, setTextInput] = useState("");
   const [minimize, setMinimize] = useState(false);
   const [loading, setLoading] = useState(false);
-  const botGreetingMessage = "Hey, I am Pearl, How can I help you?";
+  const botGreetingMessage = ["Hey, I am Pearl, How can I help you?"];
   const chatboxRef = useRef(null);
 
   const toggleState = () => {
@@ -87,12 +85,30 @@ const App = () => {
     setState(false);
   };
 
+  const renderMessage = (message) => {
+    const urlRegex = /(https?:\/\/[^\s]+)/g;
+    const parts =String(message).split(urlRegex);
+  
+    return parts.map((part, index) => {
+      if (urlRegex.test(part)) {
+        // Render URL as a clickable link
+        return (
+          <a href={part} target="_blank" rel="noopener noreferrer" key={index}>
+            {part}
+          </a>
+        );
+      } else {
+        // Render plain text
+        return <span key={index}>{part}</span>;
+      }
+    });
+  };
+
   useEffect(() => {
     if (state && !minimize && messages.length === 0) {
       setTimeout(() => {
         const botMessage = { name: "Pearl", message: botGreetingMessage };
         setMessages((prevMessages) => [...prevMessages, botMessage]);
-
         setTimeout(() => {
           chatboxRef.current.scrollTop = chatboxRef.current.scrollHeight;
         }, 100);
@@ -115,7 +131,7 @@ const App = () => {
                   src="https://img.icons8.com/color/48/000000/circled-user-female-skin-type-5--v1.png"
                   alt="image"
                 />
-                <div class="online-symbol"></div>
+                <div className="online-symbol"></div>
               </div>
               <div className="chatbox__content--header">
                 <h4 className="chatbox__heading--header">Chat support</h4>
@@ -169,7 +185,7 @@ const App = () => {
                           alt="Chatbot Avatar"
                         />
                       </div>
-                      <div className="chatbox__message">{message.message}</div>
+                      <div className="chatbox__message">{renderMessage(message.message)}</div>
                     </div>
                   ) : (
                     message.message
@@ -189,7 +205,7 @@ const App = () => {
               className="chatbox__send--footer send__button"
               onClick={onSendButton}
             >
-            <i className="fa fa-paper-plane"></i>
+              <i className="fa fa-paper-plane"></i>
             </button>
           </div>
         </div>
