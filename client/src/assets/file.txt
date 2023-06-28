@@ -1,0 +1,2 @@
+when my api request is being rejected it shows "I cannot process your query right now" but when I close the chatsupport window while is was loading and i open the chat support window after that it shows the previous failed request message again, and after that greeting message appear, that previous message should not appear when i reopen the chat window after closing it once
+
