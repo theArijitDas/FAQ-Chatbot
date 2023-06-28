@@ -6,10 +6,6 @@ app=Flask(__name__)
 
 CORS(app, origins='http://127.0.0.1:5173', allow_headers=['Content-Type'])
 
-@app.get("/")
-def sayHello():
-    message={"answer":"Hello"}
-    return jsonify(message)
 
 @app.post("/predict")
 def predict():
