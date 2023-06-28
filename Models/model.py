@@ -19,7 +19,12 @@ class FaqEngine:
 
 
     def cleanup(self, sentence):
-        words = nltk.word_tokenize(sentence)
+        try:
+            words = nltk.word_tokenize(sentence)
+        except:
+            nltk.download('punkt')
+            words = nltk.word_tokenize(sentence)
+
         stemmed_words = [self.stemmer.stem(word) for word in words]
         return ' '.join(stemmed_words)
 
