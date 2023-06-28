@@ -10,7 +10,7 @@ const App = () => {
   const [textInput, setTextInput] = useState("");
   const [minimize, setMinimize] = useState(false);
   const [loading, setLoading] = useState(false);
-  const botGreetingMessage = "Hey! I am an assistant bot. How may I help you?";
+  const botGreetingMessage = "Hey! I am Pearl. How may I help you?";
   const chatboxRef = useRef(null);
 
   const toggleState = () => {
@@ -39,7 +39,7 @@ const App = () => {
       })
         .then((response) => response.json())
         .then((data) => {
-          const responseMessage = { name: "Nina", message: data.answer };
+          const responseMessage = { name: "Pearl", message: data.answer };
           setMessages((prevMessages) => [...prevMessages, responseMessage]);
 
           setLoading(false);
@@ -47,7 +47,7 @@ const App = () => {
         .catch((error) => {
           console.error("Error:", error);
           const errorMessage = {
-            name: "Nina",
+            name: "Pearl",
             message: "I cannot process your query right now.",
           };
           setMessages((prevMessages) => [...prevMessages, errorMessage]);
@@ -88,7 +88,7 @@ const App = () => {
   useEffect(() => {
     if (state && !minimize && messages.length === 0) {
       setTimeout(() => {
-        const botMessage = { name: "Nina", message: botGreetingMessage };
+        const botMessage = { name: "Pearl", message: botGreetingMessage };
         setMessages((prevMessages) => [...prevMessages, botMessage]);
 
         setTimeout(() => {
@@ -152,12 +152,12 @@ const App = () => {
                 <div
                   key={index}
                   className={`messages__item ${
-                    message.name === "Nina"
+                    message.name === "Pearl"
                       ? "messages__item--visitor"
                       : "messages__item--operator"
                   }`}
                 >
-                  {message.name === "Nina" ? (
+                  {message.name === "Pearl" ? (
                     <div className="chatbox__message-container">
                       <div className="chatbox__avatar">
                         <img
