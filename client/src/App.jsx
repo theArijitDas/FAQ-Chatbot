@@ -185,7 +185,7 @@ const App = () => {
               className="chatbox__send--footer send__button"
               onClick={onSendButton}
             >
-              Send
+            <i className="fa fa-paper-plane"></i>
             </button>
           </div>
         </div>
