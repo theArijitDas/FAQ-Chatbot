@@ -1,0 +1,19 @@
+Available Models:
+- sentence-transformers/paraphrase-MiniLM-L3-v2
+- sentence-transformers/paraphrase-MiniLM-L6-v2
+- sentence-transformers/multi-qa-MiniLM-L6-cos-v1
+- sentence-transformers/all-MiniLM-L6-v2
+- sentence-transformers/all-MiniLM-L12-v1
+- sentence-transformers/all-MiniLM-L12-v2
+- sentence-transformers/paraphrase-MiniLM-L12-v2
+- sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2
+Load Time:
+  sentence-transformers/all-MiniLM-L12-v1: 1.30s
+  sentence-transformers/all-MiniLM-L12-v2: 1.30s
+  sentence-transformers/all-MiniLM-L6-v2: 0.92s
+  sentence-transformers/multi-qa-MiniLM-L6-cos-v1: 0.87s
+  sentence-transformers/paraphrase-MiniLM-L12-v2: 1.37s
+  sentence-transformers/paraphrase-MiniLM-L3-v2: 0.85s
+  sentence-transformers/paraphrase-MiniLM-L6-v2: 0.88s
+  sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2: 5.76s
+...

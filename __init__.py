@@ -1,0 +1,1 @@
+dependencies = ['pandas', 'nltk', 'scikit-learn', 'sentence-transformers']
