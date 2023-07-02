@@ -16,6 +16,7 @@ const App = () => {
   ];
   const [emailVerified, setEmailVerified] = useState(false);
   const [phoneVerified, setPhoneVerified] = useState(false);
+  const [otpVerified, setOtpVerified] = useState(false);
   const chatboxRef = useRef(null);
 
   const toggleState = () => {
@@ -65,12 +66,32 @@ const App = () => {
 
   const handlePhoneNumberVerification = (textInput) => {
     if (phoneNumberRegex.test(textInput)) {
-      setPhoneVerified(true);
+      fetch("http://127.0.0.1:5000/verify_phone", {
+        method: "POST",
+        body: JSON.stringify({ phone: textInput }),
+        mode: "cors",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+        .then((response) => {
+          if (response.status === 201) {
+            setPhoneVerified(true);
+          }
+          return response.json();
+        })
+        .then((data) => {
+          const responseMessage = { name: "Pearl", message: data.message };
+          setMessages((prevMessages) => [...prevMessages, responseMessage]);
 
-      setMessages((prevMessages) => [
-        ...prevMessages,
-        { name: "Pearl", message: "Your phone number is verified." },
-      ]);
+          setLoading(false);
+        })
+        .catch((err) => {
+          console.log(err);
+          setLoading(false);
+        });
+
+     
     } else {
       setMessages((prevMessages) => [
         ...prevMessages,
@@ -83,6 +104,33 @@ const App = () => {
     }
   };
 
+  const handleOtpVerification = (textInput) => {
+  
+      fetch("http://127.0.0.1:5000/verify_otp", {
+        method: "POST",
+        body: JSON.stringify({ otp: textInput }),
+        mode: "cors",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+        .then((response) => {
+          if (response.status === 201) setOtpVerified(true);
+          return response.json();
+        })
+        .then((data) => {
+          const responseMessage = { name: "Pearl", message: data.message };
+          setMessages((prevMessages) => [...prevMessages, responseMessage]);
+          setLoading(false);
+        })
+        .catch((err) => {
+          console.log(err);
+          setLoading(false);
+        });
+     
+   
+  };
+
   const onSendButton = () => {
     if (textInput === "" || loading) {
       return;
@@ -93,11 +141,14 @@ const App = () => {
     setTextInput("");
     setLoading(true);
 
-    if (!emailVerified && !phoneVerified) {
+    if (!emailVerified && !phoneVerified && !otpVerified) {
       handleEmailVerification(textInput);
       setLoading(false);
-    } else if (emailVerified && !phoneVerified) {
+    } else if (emailVerified && !phoneVerified && !otpVerified) {
       handlePhoneNumberVerification(textInput);
+      setLoading(false);
+    } else if (emailVerified && phoneVerified && !otpVerified) {
+      handleOtpVerification(textInput);
       setLoading(false);
     } else {
       setTimeout(() => {
