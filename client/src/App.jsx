@@ -10,12 +10,77 @@ const App = () => {
   const [textInput, setTextInput] = useState("");
   const [minimize, setMinimize] = useState(false);
   const [loading, setLoading] = useState(false);
-  const botGreetingMessage = ["Hey, I am Pearl, How can I help you?"];
+  const botGreetingMessage = [
+    "Hey, I am Pearl",
+    " Please provide your email id",
+  ];
+  const [emailVerified, setEmailVerified] = useState(false);
+  const [phoneVerified, setPhoneVerified] = useState(false);
   const chatboxRef = useRef(null);
 
   const toggleState = () => {
     setState((prev) => !prev);
     setMinimize(false);
+  };
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  const handleEmailVerification = (textInput) => {
+    if (emailRegex.test(textInput)) {
+      fetch("http://127.0.0.1:5000/verify_email", {
+        method: "POST",
+        body: JSON.stringify({ email: textInput }),
+        mode: "cors",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+        .then((response) => {
+          if (response.status === 201) {
+            setEmailVerified(true);
+          }
+          return response.json();
+        })
+        .then((data) => {
+          const responseMessage = { name: "Pearl", message: data.message };
+          setMessages((prevMessages) => [...prevMessages, responseMessage]);
+
+          setLoading(false);
+        })
+        .catch((err) => {
+          console.log(err);
+          setLoading(false);
+        });
+    } else {
+      setMessages((prevMessages) => [
+        ...prevMessages,
+        {
+          name: "Pearl",
+          message: "Invalid email. Please enter a valid email.",
+        },
+      ]);
+    }
+  };
+
+  const phoneNumberRegex = /^\d{10}$/;
+
+  const handlePhoneNumberVerification = (textInput) => {
+    if (phoneNumberRegex.test(textInput)) {
+      setPhoneVerified(true);
+
+      setMessages((prevMessages) => [
+        ...prevMessages,
+        { name: "Pearl", message: "Your phone number is verified." },
+      ]);
+    } else {
+      setMessages((prevMessages) => [
+        ...prevMessages,
+        {
+          name: "Pearl",
+          message:
+            "Invalid phone number. Please enter a valid 10-digit phone number.",
+        },
+      ]);
+    }
   };
 
   const onSendButton = () => {
@@ -28,32 +93,40 @@ const App = () => {
     setTextInput("");
     setLoading(true);
 
-    setTimeout(() => {
-      fetch("http://127.0.0.1:5000/predict", {
-        method: "POST",
-        body: JSON.stringify({ message: textInput }),
-        mode: "cors",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          const responseMessage = { name: "Pearl", message: data.answer };
-          setMessages((prevMessages) => [...prevMessages, responseMessage]);
-
-          setLoading(false);
+    if (!emailVerified && !phoneVerified) {
+      handleEmailVerification(textInput);
+      setLoading(false);
+    } else if (emailVerified && !phoneVerified) {
+      handlePhoneNumberVerification(textInput);
+      setLoading(false);
+    } else {
+      setTimeout(() => {
+        fetch("http://127.0.0.1:5000/predict", {
+          method: "POST",
+          body: JSON.stringify({ message: textInput }),
+          mode: "cors",
+          headers: {
+            "Content-Type": "application/json",
+          },
         })
-        .catch((error) => {
-          console.error("Error:", error);
-          const errorMessage = {
-            name: "Pearl",
-            message: "I cannot process your query right now.",
-          };
-          setMessages((prevMessages) => [...prevMessages, errorMessage]);
-          setLoading(false);
-        });
-    }, 1000); // Delay the fetch request by 1 second
+          .then((response) => response.json())
+          .then((data) => {
+            const responseMessage = { name: "Pearl", message: data.answer };
+            setMessages((prevMessages) => [...prevMessages, responseMessage]);
+
+            setLoading(false);
+          })
+          .catch((error) => {
+            console.error("Error:", error);
+            const errorMessage = {
+              name: "Pearl",
+              message: "I cannot process your query right now.",
+            };
+            setMessages((prevMessages) => [...prevMessages, errorMessage]);
+            setLoading(false);
+          });
+      }, 1000); // Delay the fetch request by 1 second
+    }
   };
 
   const handleInputChange = (event) => {
@@ -78,6 +151,8 @@ const App = () => {
     setState(false);
     setMessages([]);
     setTextInput("");
+    setEmailVerified(false);
+    setPhoneVerified(false);
   };
 
   const minimizeWindow = () => {
@@ -87,8 +162,8 @@ const App = () => {
 
   const renderMessage = (message) => {
     const urlRegex = /(https?:\/\/[^\s]+)/g;
-    const parts =String(message).split(urlRegex);
-  
+    const parts = String(message).split(urlRegex);
+
     return parts.map((part, index) => {
       if (urlRegex.test(part)) {
         // Render URL as a clickable link
@@ -109,9 +184,9 @@ const App = () => {
       setTimeout(() => {
         const botMessage = { name: "Pearl", message: botGreetingMessage };
         setMessages((prevMessages) => [...prevMessages, botMessage]);
-        setTimeout(() => {
-          chatboxRef.current.scrollTop = chatboxRef.current.scrollHeight;
-        }, 100);
+        // setTimeout(() => {
+        //   chatboxRef.current.scrollTop = chatboxRef.current.scrollHeight;
+        // }, 100);
       }, 1000);
     }
   }, [state, minimize, messages]);
@@ -185,7 +260,9 @@ const App = () => {
                           alt="Chatbot Avatar"
                         />
                       </div>
-                      <div className="chatbox__message">{renderMessage(message.message)}</div>
+                      <div className="chatbox__message">
+                        {renderMessage(message.message)}
+                      </div>
                     </div>
                   ) : (
                     message.message
